@@ -12,5 +12,8 @@ from tensorflow.keras.initializers import random_uniform, glorot_uniform, consta
 from tensorflow.keras.layers import Dropout, Input, Add, Dense, Activation, BatchNormalization, Flatten, Conv2D, MaxPooling2D, GlobalMaxPooling2D
 from tensorflow.keras.models import Model, load_model
 
-path = Path("/data/wiki_crop/")
+path = Path("/data/wiki_crop/01")
 filenames = list(map(lambda x: x.name, path.rglob('*.jpg')))
+
+print(len(filenames))
+print(filenames[:3])
