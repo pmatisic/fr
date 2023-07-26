@@ -1,1 +1,22 @@
-# fr
+Face recognition
+
+How to check my age and gender?
+To begin, clone this repository using the command:
+
+git clone https://github.com/pmatisic/fr
+
+After that, execute the command in the root directory:
+
+chmod +x *.sh
+
+and then:
+
+./test.sh
+
+and accept all prompts by answering "y" (yes). When all the commands are completed successfully, then the command needs to be executed:
+
+python model.py
+
+Enjoy!
+
+© Center for Forensic, Biometry and Privacy (cfbp.foi.unizg.hr) 2023.
