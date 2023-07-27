@@ -1,21 +1,22 @@
-Face recognition
+Face Recognizer
 
-How to check my age and gender?
-To begin, clone this repository using the command:
+How to determine your age and gender?
+To begin, clone this repository into your desired directory using the command line:
 
-git clone https://github.com/pmatisic/fr
+	git clone https://github.com/pmatisic/fr
 
-After that, execute the command in the root directory:
+Afterwards, execute the following command in your root directory:
 
-chmod +x *.sh
+	chmod +x setup.sh
 
 and then:
 
-./test.sh
+	./setup.sh
 
-and accept all prompts by answering "y" (yes). When all the commands are completed successfully, then the command needs to be executed:
+Follow all the instructions provided on the screen output.
+Once the project setup is successfully completed, test the program using the following command:
 
-python model.py
+	python model.py
 
 Enjoy!
 
