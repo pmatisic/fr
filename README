@@ -1,6 +1,6 @@
 Face Recognizer
 
-How to determine your age and gender?
+How to check your age and gender?
 To begin, clone this repository into your desired directory using the command line:
 
 	git clone https://github.com/pmatisic/fr
