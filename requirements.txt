@@ -37,6 +37,7 @@ mkl-service==2.4.0
 multidict==6.0.2
 numpy==1.19.5
 oauthlib==3.2.2
+opencv-python==4.8.0.74
 opt-einsum==3.3.0
 packaging==23.0
 pandas==1.4.4
