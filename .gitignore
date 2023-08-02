@@ -15,3 +15,4 @@ project_lib.egg-info/**
 
 data/
 results/
+temp/
