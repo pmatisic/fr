@@ -29,27 +29,11 @@ class ImageProcessor:
         np.random.seed(seed)
         np.random.shuffle(self.all_filenames)
 
-    def load_invalid_images(self, json_path="temp/invalid_images.json"):
-        if os.path.exists(json_path):
-            with open(json_path, 'r') as f:
-                return json.load(f)
-        return []
-
-    def save_invalid_images(self, invalid_images, json_path="temp/invalid_images.json"):
-        with open(json_path, 'w') as f:
-            json.dump(invalid_images, f)
-    
     def _collect_all_filenames(self) -> list:
         wiki_filenames = [str(f.relative_to(self.wiki_path)) for f in self.wiki_path.rglob('*.jpg')]
         imdb_filenames = [str(f.relative_to(self.imdb_path)) for f in self.imdb_path.rglob('*.jpg')]
         return wiki_filenames + imdb_filenames
-    
-    def detect_face(self, image_path: Path) -> bool:
-        img = cv2.imread(str(image_path))
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(gray, 1.01, 4)
-        return len(faces) > 0
-    
+
     def is_valid_image(self, image_relative_path: str) -> bool:
         if image_relative_path in self.invalid_images:
             return False
@@ -75,6 +59,22 @@ class ImageProcessor:
             print(f"Error with image {full_path}: {e}")
             self.invalid_images.append(image_relative_path)
             return False
+
+    def detect_face(self, image_path: Path) -> bool:
+        img = cv2.imread(str(image_path))
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(gray, 1.01, 4)
+        return len(faces) > 0
+
+    def save_invalid_images(self, invalid_images, json_path="temp/invalid_images.json"):
+        with open(json_path, 'w') as f:
+            json.dump(invalid_images, f)
+
+    def load_invalid_images(self, json_path="temp/invalid_images.json"):
+        if os.path.exists(json_path):
+            with open(json_path, 'r') as f:
+                return json.load(f)
+        return []
 
     def get_valid_images(self):
         valid_images = [img for img in self.all_filenames if self.is_valid_image(img)]
@@ -152,17 +152,14 @@ class DatasetAnalyzer:
         self.df = self._prepare_dataframe()
         
     def _prepare_dataframe(self):
-        df = pd.DataFrame(self.data, columns=['Image_Path', 'Age', 'Gender'])
         print(f"Removed {self.invalid_images_count} images due to invalidity issues.")
-
+        df = pd.DataFrame(self.data, columns=['Image_Path', 'Age', 'Gender'])
         assert df['Age'].min() >= 0, "There are still negative age values!"
         assert not df['Age'].isin([np.inf, -np.inf, np.nan]).any(), "There are still infinite or NaN age values!"
-        
         gender_dict = {1: "Male", 0: "Female"}
         df['Gender'] = df['Gender'].map(gender_dict)
         df = df.astype({'Age': 'float32', 'Gender': 'category'})
         print(df.dtypes)
-        
         return df
 
     def show_image(self, index: int):
@@ -189,10 +186,8 @@ class DatasetAnalyzer:
     def show_first_n_images(self, n=20):
         rows = math.ceil(math.sqrt(n))
         cols = math.ceil(n / rows)
-
         files = self.df.iloc[0:n]
         plt.figure(figsize=(15, 15))
-            
         for index, (image_relative_path, age, gender) in enumerate(files.values):
             img_path = self._get_image_path(image_relative_path)
             img = Image.open(img_path)
@@ -200,7 +195,6 @@ class DatasetAnalyzer:
             plt.imshow(img)
             plt.title(f"Age: {age:.2f} Gender: {gender}")
             plt.axis('off')
-            
         plt.tight_layout()
         plt.show()
 
