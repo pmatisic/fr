@@ -2,8 +2,6 @@
 **/*.mat
 **/*.gif
 **/*.tar
-
-
 venv/**
 .idea/**
 build/**
@@ -11,8 +9,6 @@ dist/**
 project_lib.egg-info/**
 **/*.asv
 **/.ipynb_checkpoints/*
-
-
 data/
 results/
 temp/
