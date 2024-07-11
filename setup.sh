@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Provjera potrebnih privilegija
-if [ "$EUID" -ne 0 ]
-then
-    read -p "Ova skripta može zahtijevati sudo privilegije. Imate li sudo privilegije? (y/n): " sudo_priv
-    if [ "$sudo_priv" != "y" ]; then
+if [ "$EUID" -ne 0 ]; then
+    if ! sudo -v; then
         echo "Nemate potrebnih privilegija. Završetak skripte."
         exit 1
     fi
@@ -27,8 +25,12 @@ echo "Odlično! Nastavljamo s postavljanjem projekta."
 # 1. Ažuriraj putanje
 echo "Ažuriranje putanja za CUDA i cuDNN..."
 update_path() {
-    echo "export PATH=/opt/cuda/bin:$PATH" >> $1
-    echo "export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH" >> $1
+    if ! grep -q "/opt/cuda/bin" "$1"; then
+        echo "export PATH=/opt/cuda/bin:\$PATH" >> "$1"
+    fi
+    if ! grep -q "/opt/cuda/lib64" "$1"; then
+        echo "export LD_LIBRARY_PATH=/opt/cuda/lib64:\$LD_LIBRARY_PATH" >> "$1"
+    fi
     echo "Napomena: Za ažurirane putanje restartirajte terminal ili izvršite 'source $1'."
 }
 
@@ -47,7 +49,9 @@ mkdir -p "data" && cd "data" || { echo "Greška prilikom kreiranja direktorija '
 # 3. Preuzimanje datoteka
 download_file() {
     if [ ! -f "$1" ]; then
-        wget "$2" || { echo "Greška prilikom preuzimanja $1. Završetak skripte."; exit 1; }
+        wget "$2" -O "$1" || { echo "Greška prilikom preuzimanja $1. Završetak skripte."; exit 1; }
+    else
+        echo "$1 već postoji. Preskakanje preuzimanja."
     fi
 }
 
@@ -69,30 +73,31 @@ unpack_file "wiki_crop.tar"
 # 5. Vrati se u korijenski direktorij
 cd ..
 
-# 6. Instalacija python3.8
-echo "Instalacija Python 3.8..."
-sudo apt-get update
-sudo apt-get install -y python3.8 || { echo "Greška prilikom instalacije Python 3.8. Završetak skripte."; exit 1; }
-
-# 7. Instalacija conda
+# 6. Instalacija conda
 echo "Provjerava se postojanje Conde..."
 if ! command -v conda &> /dev/null; then
     echo "Instalacija Conda..."
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    bash Miniconda3-latest-Linux-x86_64.sh || { echo "Greška prilikom instalacije Conde. Završetak skripte."; exit 1; }
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda || { echo "Greška prilikom instalacije Conde. Završetak skripte."; exit 1; }
+    export PATH="$HOME/miniconda/bin:$PATH"
+    source ~/.bashrc || source ~/.zshrc
 else
     echo "Conda je već instalirana."
 fi
 
+# 7. Dodaj Miniconda u PATH
+if ! grep -q "$HOME/miniconda/bin" ~/.bashrc; then
+    echo "export PATH=\"$HOME/miniconda/bin:\$PATH\"" >> ~/.bashrc
+    source ~/.bashrc
+fi
+
 # 8. Kreiranje conda okruženja
-echo "Kreiranje Conda okruženja 'tfgpue' s Python 3.8..."
-conda create -y --name tfgpue python=3.8 || { echo "Greška prilikom kreiranja Conda okruženja. Završetak skripte."; exit 1; }
+echo "Kreiranje Conda okruženja 'fr' s Python 3.8..."
+conda create -y --name fr python=3.8 || { echo "Greška prilikom kreiranja Conda okruženja. Završetak skripte."; exit 1; }
 
-# 9. Instalacija tensorflow-gpu unutar conda okruženja
-echo "Instalacija TensorFlow-GPU unutar Conda okruženja 'tfgpue'..."
-conda install -y -n tfgpue tensorflow-gpu || { echo "Greška prilikom instalacije TensorFlow-GPU. Završetak skripte."; exit 1; }
-
-# 10. Instrukcije za aktivaciju conda okruženja
-echo "Molimo vas da ručno aktivirate conda okruženje pomoću 'conda activate tfgpue' i zatim nastavite s instalacijom paketa iz 'requirements.txt' koristeći 'pip install -r requirements.txt'."
+# 9. Aktivacija conda okruženja i instalacija zahtjeva
+echo "Aktivacija Conda okruženja 'fr' i instalacija zahtjeva..."
+source $HOME/miniconda/bin/activate fr || { echo "Greška prilikom aktivacije Conda okruženja. Završetak skripte."; exit 1; }
+pip install -r requirements.txt || { echo "Greška prilikom instalacije paketa. Završetak skripte."; exit 1; }
 
 echo "Postavljanje projekta je završeno!"

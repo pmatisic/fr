@@ -7,15 +7,10 @@ import scipy.io
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import tensorflow as tf
+import mediapipe as mp
 import matplotlib.pyplot as plt
 from PIL import Image
 from pathlib import Path
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.preprocessing.image import load_img
-from tensorflow.keras.initializers import random_uniform, glorot_uniform, constant, identity
-from tensorflow.keras.layers import Dropout, Input, Add, Dense, Activation, BatchNormalization, Flatten, Conv2D, MaxPooling2D, GlobalMaxPooling2D
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -23,7 +18,7 @@ class ImageProcessor:
     def __init__(self, wiki_path: str, imdb_path: str, seed: int = 10):
         self.wiki_path = Path(wiki_path)
         self.imdb_path = Path(imdb_path)
-        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        self.face_detection = mp.solutions.face_detection.FaceDetection(min_detection_confidence=0.5)
         self.all_filenames = self._collect_all_filenames()
         self.invalid_images = self.load_invalid_images()
         np.random.seed(seed)
@@ -62,13 +57,17 @@ class ImageProcessor:
 
     def detect_face(self, image_path: Path) -> bool:
         img = cv2.imread(str(image_path))
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(gray, 1.01, 4)
-        return len(faces) > 0
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        results = self.face_detection.process(img_rgb)
+        if results.detections:
+            return True
+        return False
 
-    def save_invalid_images(self, invalid_images, json_path="temp/invalid_images.json"):
+    def save_invalid_images(self, json_path="temp/invalid_images.json"):
+        if not os.path.exists("temp"):
+            os.makedirs("temp")
         with open(json_path, 'w') as f:
-            json.dump(invalid_images, f)
+            json.dump(self.invalid_images, f)
 
     def load_invalid_images(self, json_path="temp/invalid_images.json"):
         if os.path.exists(json_path):
@@ -76,11 +75,27 @@ class ImageProcessor:
                 return json.load(f)
         return []
 
-    def get_valid_images(self):
-        valid_images = [img for img in self.all_filenames if self.is_valid_image(img)]
+    def save_valid_images(self, valid_images, json_path="temp/valid_images.json"):
+        if not os.path.exists("temp"):
+            os.makedirs("temp")
+        with open(json_path, 'w') as f:
+            json.dump(valid_images, f)
+
+    def load_valid_images(self, json_path="temp/valid_images.json"):
+        if os.path.exists(json_path):
+            with open(json_path, 'r') as f:
+                return json.load(f)
+        return []
+
+    def get_valid_images(self, limit=1000):
+        valid_images = []
+        for img in self.all_filenames:
+            if len(valid_images) >= limit:
+                break
+            if self.is_valid_image(img):
+                valid_images.append(img)
         invalid_images_count = len(self.all_filenames) - len(valid_images)
-        self.invalid_images.extend([img for img in self.all_filenames if img not in valid_images])
-        self.save_invalid_images(self.invalid_images)
+        self.save_invalid_images()
         return valid_images, invalid_images_count
 
     def display_info(self):
@@ -207,11 +222,23 @@ class DatasetAnalyzer:
 if __name__ == '__main__':
 
     processor = ImageProcessor("data/wiki_crop/", "data/imdb_crop/")
-    valid_images, invalid_images_count = processor.get_valid_images()
+    
+    valid_images_json_path = "temp/valid_images.json"
+    valid_images = processor.load_valid_images(valid_images_json_path)
+
+    if not valid_images:
+        valid_images, invalid_images_count = processor.get_valid_images(limit=1000)
+        processor.save_valid_images(valid_images, valid_images_json_path)
+    else:
+        print("Loaded valid images from JSON file.")
+    
     processor.display_info()
+    print(f"Number of valid images: {len(valid_images)}")
+    
     extractor = DataExtractor("data/wiki_crop/wiki.mat", "data/imdb_crop/imdb.mat")
     extractor.display_info()
-    analyzer = DatasetAnalyzer(extractor.all_data, invalid_images_count, "data/wiki_crop/", "data/imdb_crop/")
+    
+    analyzer = DatasetAnalyzer(extractor.all_data, len(processor.invalid_images), "data/wiki_crop/", "data/imdb_crop/")
     analyzer.show_image(1)
     analyzer.visualize_age_distribution()
     analyzer.save_age_data()
