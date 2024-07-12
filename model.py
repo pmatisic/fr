@@ -87,7 +87,7 @@ class ImageProcessor:
                 return json.load(f)
         return []
 
-    def get_valid_images(self, limit=1000):
+    def get_valid_images(self, limit=999999):
         valid_images = []
         for img in self.all_filenames:
             if len(valid_images) >= limit:
@@ -102,17 +102,35 @@ class ImageProcessor:
         print(len(self.all_filenames))
         print(self.all_filenames[:3])
 
+    def show_first_n_valid_images(self, n=20):
+        valid_images = self.load_valid_images("temp/valid_images.json")
+        rows = math.ceil(math.sqrt(n))
+        cols = math.ceil(n / rows)
+        plt.figure(figsize=(15, 15))
+        for index, image_relative_path in enumerate(valid_images[:n]):
+            if (self.wiki_path / image_relative_path).exists():
+                img_path = self.wiki_path / image_relative_path
+            else:
+                img_path = self.imdb_path / image_relative_path
+            img = Image.open(img_path)
+            plt.subplot(rows, cols, index+1)
+            plt.imshow(img)
+            plt.title(f"Image {index+1}")
+            plt.axis('off')
+        plt.tight_layout()
+        plt.show()
+
 class DataExtractor:
     def __init__(self, wiki_mat_path: str, imdb_mat_path: str):
         self.wiki_mat_data = scipy.io.loadmat(wiki_mat_path)['wiki']
         self.imdb_mat_data = scipy.io.loadmat(imdb_mat_path)['imdb']
-        self.all_data = self._combine_data()
+        self.all_data, self.invalid_data = self._combine_data()
 
     @staticmethod
     def _matlab_to_year(matlab_datenum: float) -> float:
         return 1970 + (matlab_datenum - 719529) / 365.25
 
-    def _extract_data(self, mat_data: np.ndarray) -> list:
+    def _extract_data(self, mat_data: np.ndarray) -> tuple:
         photo_taken = mat_data[0][0][1][0]
         dob = mat_data[0][0][0][0]
         full_path = mat_data[0][0][2][0]
@@ -124,6 +142,7 @@ class DataExtractor:
         data = []
         problematic_entries = []
         high_age_entries = []
+        invalid_entries = []
 
         for i in range(len(dob)):
             if not np.isnan(gender[i]):  
@@ -135,13 +154,15 @@ class DataExtractor:
                 data.append((image_path, person_age, person_gender))
             elif person_age >= 120:
                 high_age_entries.append((image_path, person_age, self._matlab_to_year(dob[i]), photo_taken[i]))
+                invalid_entries.append(image_path)
             else:
                 problematic_entries.append((image_path, person_age, self._matlab_to_year(dob[i]), photo_taken[i]))
+                invalid_entries.append(image_path)
 
         self._display_problematic_entries(problematic_entries, "negative age")
         self._display_problematic_entries(high_age_entries, "unusually high age")
 
-        return data
+        return data, invalid_entries
 
     @staticmethod
     def _display_problematic_entries(entries: list, problem_type: str):
@@ -149,10 +170,10 @@ class DataExtractor:
         for entry in entries:
             print(f"Image path: {entry[0]}, Calculated Age: {entry[1]}, Year of Birth: {entry[2]}, Photo Taken: {entry[3]}")
 
-    def _combine_data(self) -> list:
-        wiki_data = self._extract_data(self.wiki_mat_data)
-        imdb_data = self._extract_data(self.imdb_mat_data)
-        return wiki_data + imdb_data
+    def _combine_data(self) -> tuple:
+        wiki_data, wiki_invalid = self._extract_data(self.wiki_mat_data)
+        imdb_data, imdb_invalid = self._extract_data(self.imdb_mat_data)
+        return wiki_data + imdb_data, wiki_invalid + imdb_invalid
 
     def display_info(self):
         print(len(self.all_data))
@@ -227,7 +248,7 @@ if __name__ == '__main__':
     valid_images = processor.load_valid_images(valid_images_json_path)
 
     if not valid_images:
-        valid_images, invalid_images_count = processor.get_valid_images(limit=1000)
+        valid_images, invalid_images_count = processor.get_valid_images(limit=999999)
         processor.save_valid_images(valid_images, valid_images_json_path)
     else:
         print("Loaded valid images from JSON file.")
@@ -238,8 +259,13 @@ if __name__ == '__main__':
     extractor = DataExtractor("data/wiki_crop/wiki.mat", "data/imdb_crop/imdb.mat")
     extractor.display_info()
     
+    processor.invalid_images.extend(extractor.invalid_data)
+    processor.save_invalid_images()
+
     analyzer = DatasetAnalyzer(extractor.all_data, len(processor.invalid_images), "data/wiki_crop/", "data/imdb_crop/")
     analyzer.show_image(1)
     analyzer.visualize_age_distribution()
     analyzer.save_age_data()
     analyzer.show_first_n_images()
+    
+    processor.show_first_n_valid_images(n=20)

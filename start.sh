@@ -3,7 +3,7 @@
 # Provjera je li nvidia-smi dostupan
 if ! command -v nvidia-smi &> /dev/null
 then
-    echo "nvidia-smi nije pronađen. Provjerite je li NVIDIA drajver instaliran."
+    echo "nvidia-smi nije pronađen. Provjerite je li NVIDIA driver instaliran."
     exit 1
 fi
 
@@ -33,7 +33,7 @@ wait $APP_PID
 
 # Provjera je li aplikacija uspješno pokrenuta
 if [ $? -eq 0 ]; then
-    echo "Aplikacija je uspješno pokrenuta."
+    echo "Aplikacija je uspješno ugašena."
 else
     echo "Došlo je do greške prilikom pokretanja aplikacije."
 fi
