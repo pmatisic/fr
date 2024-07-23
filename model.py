@@ -100,9 +100,8 @@ class Trainer:
                 batch_end_time = time.time()
                 batch_time = batch_end_time - batch_start_time
                 self.batch_log.append([epoch+1, i+1, loss.item(), batch_time])
-                self.save_logs()  # Save logs after each batch
+                self.save_logs()
 
-                # Dodajte ispise za praćenje
                 print(f"Finished batch {i+1}/{len(self.train_loader)}, time taken: {batch_time:.2f}s")
                 print(f"Batch {i+1} - Loss Age: {loss_age.item():.4f}, Loss Gender: {loss_gender.item():.4f}, Total Loss: {loss.item():.4f}")
                 print(f"Predicted Age: {outputs_age.squeeze().detach().cpu().numpy()}")
@@ -121,10 +120,10 @@ class Trainer:
 
             self.train_log.append([epoch+1, avg_train_loss, epoch_time])
             self.test_log.append([epoch+1, avg_test_loss, epoch_time])
-            self.save_logs()  # Save logs after each epoch
+            self.save_logs()
         
         torch.save(self.model.state_dict(), 'results/age_gender.pth')
-        self.save_logs()  # Final save
+        self.save_logs()
         self.test_stability()
         self.test_robustness()
 
@@ -144,7 +143,6 @@ class Trainer:
                 
                 test_loss += loss.item()
 
-                # Dodajte ispise za praćenje
                 print(f"Predicted Age: {outputs_age.squeeze().cpu().numpy()}")
                 print(f"Predicted Gender: {torch.argmax(outputs_gender, dim=1).cpu().numpy()}")
                 print(f"Actual Age: {ages.cpu().numpy()}")
@@ -199,7 +197,7 @@ class Trainer:
                         brightness_age_predictions[j].cpu().numpy(), brightness_gender_predictions[j].cpu().numpy(),
                         contrast_age_predictions[j].cpu().numpy(), contrast_gender_predictions[j].cpu().numpy()
                     ])
-                    self.save_logs()  # Save logs after each batch of stability test
+                    self.save_logs()
 
     def test_robustness(self):
         gender_model = GenderPredictionModel(self.model)
@@ -212,7 +210,6 @@ class Trainer:
             images, ages, genders = images.to(self.device), ages.to(self.device), genders.to(self.device)
             original_age_predictions, original_gender_predictions = self.model(images)
             
-            # Generate adversarial examples
             adversarial_images = attack(images, genders)
             adversarial_age_predictions, adversarial_gender_predictions = self.model(adversarial_images)
             
@@ -222,7 +219,7 @@ class Trainer:
                     original_age_predictions[j].detach().cpu().numpy(), original_gender_predictions[j].detach().cpu().numpy(),
                     adversarial_age_predictions[j].detach().cpu().numpy(), adversarial_gender_predictions[j].detach().cpu().numpy()
                 ])
-            self.save_logs()  # Save logs after each batch of robustness test
+            self.save_logs()
 
 class Evaluator:
     def __init__(self, model, data_loader, device):
