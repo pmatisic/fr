@@ -15,8 +15,8 @@ then
 fi
 
 # Pokretanje aplikacije koristeći NVIDIA GPU
-echo "Pokrećem model.py koristeći NVIDIA GPU..."
-prime-run python model.py &
+echo "Pokrećem dataset.py koristeći NVIDIA GPU..."
+prime-run python dataset.py &
 
 # Dohvaćanje PID-a aplikacije
 APP_PID=$!
