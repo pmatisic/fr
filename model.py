@@ -109,7 +109,7 @@ class Trainer:
                 print(f"Actual Age: {ages.detach().cpu().numpy()}")
                 print(f"Actual Gender: {genders.detach().cpu().numpy()}")
                 
-                torch.cuda.empty_cache()  # Oslobađanje memorije
+                torch.cuda.empty_cache()
                 
             avg_train_loss = running_loss / len(self.train_loader)
             avg_test_loss = self.evaluate()
@@ -198,6 +198,7 @@ class Trainer:
                         contrast_age_predictions[j].cpu().numpy(), contrast_gender_predictions[j].cpu().numpy()
                     ])
                     self.save_logs()
+                torch.cuda.empty_cache()
 
     def test_robustness(self):
         gender_model = GenderPredictionModel(self.model)
@@ -219,7 +220,8 @@ class Trainer:
                     original_age_predictions[j].detach().cpu().numpy(), original_gender_predictions[j].detach().cpu().numpy(),
                     adversarial_age_predictions[j].detach().cpu().numpy(), adversarial_gender_predictions[j].detach().cpu().numpy()
                 ])
-            self.save_logs()
+                self.save_logs()
+            torch.cuda.empty_cache()
 
 class Evaluator:
     def __init__(self, model, data_loader, device):
@@ -294,7 +296,7 @@ def main():
     test_dataset = AgeGenderDataset(test_data, "data/wiki_crop/", "data/imdb_crop/", transform=test_transform)
     
     train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=8)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=8)
+    test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False, num_workers=8)
     
     model = AgeGenderModel()
     trainer = Trainer(model, train_loader, test_loader, device)
