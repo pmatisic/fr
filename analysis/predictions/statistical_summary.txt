@@ -1,0 +1,48 @@
+Osnovna statistika:
+4×7 DataFrame
+ Row │ variable          mean       min       median   max      nmissing  eltype
+     │ Symbol            Float64    Real      Float64  Real     Int64     DataType
+─────┼─────────────────────────────────────────────────────────────────────────────
+   1 │ Predicted_Age     37.4909    17.5106   36.6804  98.5204         0  Float64
+   2 │ Predicted_Gender   0.795386   0         1.0      1              0  Int64
+   3 │ Actual_Age        37.4909     0.94627  35.5719  92.5712         0  Float64
+   4 │ Actual_Gender      0.595787   0         1.0      1              0  Int64
+
+Korelacija između predviđene i stvarne dobi: 0.6184172677118345
+
+T-test rezultat:
+Two sample t-test (unequal variance)
+------------------------------------
+Population details:
+    parameter of interest:   Mean difference
+    value under h_0:         0
+    point estimate:          0.0
+    95% confidence interval: (-0.6981, 0.6981)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           1.0000
+
+Details:
+    number of observations:   [1994,1994]
+    t-statistic:              0.0
+    degrees of freedom:       2992.098352722179
+    empirical standard error: 0.35606010889126327
+
+
+Rezultati linearne regresije:
+──────────────────────────────────────────────────────────────────────────────
+                      Coef.  Std. Error      t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────────
+(Intercept)    -1.19369e-12   1.41172    -0.00    1.0000   -2.7686     2.7686
+Predicted_Age   1.0           0.0369579  27.06    <1e-99    0.92752    1.07248
+──────────────────────────────────────────────────────────────────────────────
+
+Metrics (accuracy, precision, recall, F1-score):
+(0.73223671013039115, 0.8050441361916772, 0.8742424242424242, 0.7775054073540015)
+
+RMSE: 12.067543027930862
+
+MAE: 9.115464553822898
+
+ROC AUC: 0.7402006018054163

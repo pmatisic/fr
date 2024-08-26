@@ -1,0 +1,39 @@
+Osnovna statistika:
+4×7 DataFrame
+ Row │ variable    mean       min      median     max         nmissing  eltype
+     │ Symbol      Float64    Real     Float64    Real        Int64     DataType
+─────┼───────────────────────────────────────────────────────────────────────────
+   1 │ Epoch        10.5      1         10.5        20               0  Int64
+   2 │ Batch       997.5      1        997.5      1994               0  Int64
+   3 │ Batch_Loss  169.49     1.38564  127.155    3111.45            0  Float64
+   4 │ Batch_Time    1.96158  1.55836    1.96178     2.15528         0  Float64
+
+Korelacija između gubitka batcha i vremena batcha: -0.006294741023752495
+
+T-test rezultat:
+One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         500.0
+    point estimate:          169.49
+    95% confidence interval: (168.0, 170.9)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-99
+
+Details:
+    number of observations:   39880
+    t-statistic:              -445.2356392160364
+    degrees of freedom:       39879
+    empirical standard error: 0.7423257103658256
+
+
+Rezultati linearne regresije:
+──────────────────────────────────────────────────────────────────────────
+                 Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)  195.865      1.53478   127.62    <1e-99  192.857    198.874
+Epoch         -2.51193    0.128121  -19.61    <1e-84   -2.76305   -2.26081
+──────────────────────────────────────────────────────────────────────────

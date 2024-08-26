@@ -214,7 +214,7 @@ class DatasetAnalyzer:
         plt.xlim(0, 150)
         plt.show()
 
-    def save_age_data(self, results_path='results/dob.csv'):
+    def save_age_data(self, results_path='results/agegender.csv'):
         if not os.path.exists('results'):
             os.makedirs('results')
         self.df.to_csv(results_path, index=False)

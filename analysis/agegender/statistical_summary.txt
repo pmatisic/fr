@@ -1,0 +1,30 @@
+Osnovna statistika:
+2×7 DataFrame
+ Row │ variable  mean    min          median   max      nmissing  eltype
+     │ Symbol    Union…  Any          Union…   Any      Int64     DataType
+─────┼─────────────────────────────────────────────────────────────────────
+   1 │ Age       36.912  0.000342231  34.9812  119.625         0  Float64
+   2 │ Gender            Female                Male            0  String7
+
+Provjera nedostajućih vrijednosti:
+[0, 0, 0]
+
+T-test rezultat:
+Two sample t-test (equal variance)
+----------------------------------
+Population details:
+    parameter of interest:   Mean difference
+    value under h_0:         0
+    point estimate:          6.08166
+    95% confidence interval: (6.008, 6.156)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-99
+
+Details:
+    number of observations:   [316044,204795]
+    t-statistic:              160.7648540788192
+    degrees of freedom:       520837
+    empirical standard error: 0.03782955239180283
+

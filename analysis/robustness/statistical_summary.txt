@@ -1,0 +1,67 @@
+Osnovna statistika:
+6×7 DataFrame
+ Row │ variable                       mean                 min                  median  max                   nmissing  eltype
+     │ Symbol                         Any                  Any                  Union…  Any                   Int64     DataType
+─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │ Epoch                          499.0                1                    499.0   997                          0  Int64
+   2 │ Image Index                    0.5                  0                    0.5     1                            0  Int64
+   3 │ Original Age Prediction        [34.2825]            [17.773]                     [69.2588]                    0  Vector{Float64}
+   4 │ Original Gender Prediction     [-1.3561, 0.285707]  [-5.73544, 4.41833]          [1.35647, -0.875958]         0  Vector{Float64}
+   5 │ Adversarial Age Prediction     [40.2168]            [11.7157]                    [91.0982]                    0  Vector{Float64}
+   6 │ Adversarial Gender Prediction  [-1.7918, 0.386049]  [-7.92125, 1.84227]          [6.57328, -2.47409]          0  Vector{Float64}
+
+Korelacije između originalnih i adversarialnih predikcija:
+Adversarial Age: -0.10138348120802866
+Adversarial Gender: 0.34099467309745635
+
+T-test rezultati za razlike između originalnih i adversarialnih predikcija:
+Adversarial Age: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          -5.9343
+    95% confidence interval: (-6.772, -5.097)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-41
+
+Details:
+    number of observations:   1994
+    t-statistic:              -13.900646977802747
+    degrees of freedom:       1993
+    empirical standard error: 0.4269084855853145
+
+Adversarial Gender: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          0.167678
+    95% confidence interval: (0.1091, 0.2262)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-07
+
+Details:
+    number of observations:   3988
+    t-statistic:              5.613776051199748
+    degrees of freedom:       3987
+    empirical standard error: 0.02986901504858826
+
+
+Rezultati regresijske analize:
+Adversarial Age: ──────────────────────────────────────────────────────────────────────────
+                  Coef.  Std. Error      t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)   48.4679     1.85306    26.16    <1e-99  44.8338    52.1021
+Original_Age  -0.240681   0.0529159  -4.55    <1e-05  -0.344457  -0.136905
+──────────────────────────────────────────────────────────────────────────
+Adversarial Gender: ──────────────────────────────────────────────────────────────────────────────
+                     Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────────
+(Intercept)      -0.419084   0.0310229  -13.51    <1e-39  -0.479906  -0.358261
+Original_Gender   0.530257   0.0231541   22.90    <1e-99   0.484862   0.575652
+──────────────────────────────────────────────────────────────────────────────

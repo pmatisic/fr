@@ -10,6 +10,3 @@ project_lib.egg-info/**
 **/*.asv
 **/.ipynb_checkpoints/*
 data/
-results/
-temp/
-analysis/

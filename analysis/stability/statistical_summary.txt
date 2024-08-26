@@ -1,0 +1,223 @@
+Osnovna statistika:
+12×7 DataFrame
+ Row │ variable                      mean                  min                   median  max                     nmissing  eltype
+     │ Symbol                        Any                   Any                   Union…  Any                     Int64     DataType
+─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │ Epoch                         249.75                1                     250.0   499                            0  Int64
+   2 │ Image Index                   1.499                 0                     1.0     3                              0  Int64
+   3 │ Original Age Prediction       [36.1315]             [18.7622]                     [99.3761]                      0  Vector{Float64}
+   4 │ Original Gender Prediction    [-1.50417, 0.374955]  [-7.09192, 2.41764]           [0.505162, -0.665833]          0  Vector{Float64}
+   5 │ Noisy Age Prediction          [35.1276]             [18.7686]                     [92.3575]                      0  Vector{Float64}
+   6 │ Noisy Gender Prediction       [-1.48717, 0.396168]  [-6.67166, 2.34168]           [0.499415, -0.461008]          0  Vector{Float64}
+   7 │ Rotation Age Prediction       [35.7351]             [24.9393]                     [50.6106]                      0  Vector{Float64}
+   8 │ Rotation Gender Prediction    [-1.51056, 0.413114]  [-2.97281, 0.813211]          [-0.347009, 0.113401]          0  Vector{Float64}
+   9 │ Brightness Age Prediction     [37.1242]             [24.0746]                     [71.6786]                      0  Vector{Float64}
+  10 │ Brightness Gender Prediction  [-1.46156, 0.323707]  [-4.50683, 1.36966]           [-0.0677485, -0.5363]          0  Vector{Float64}
+  11 │ Contrast Age Prediction       [37.0373]             [24.0985]                     [70.3981]                      0  Vector{Float64}
+  12 │ Contrast Gender Prediction    [-1.44549, 0.311809]  [-4.43709, 1.56641]           [-0.100047, -0.447284]         0  Vector{Float64}
+
+Korelacije između originalnih i perturbiranih predikcija:
+Noisy Gender: 0.9748609188183524
+Rotation Gender: 0.808101703175892
+Noisy Age: 0.9328888770221389
+Rotation Age: 0.16518783973389728
+Contrast Age: 0.6705299205068542
+Contrast Gender: 0.8820181879190336
+Brightness Gender: 0.8847633066749016
+Brightness Age: 0.6777094200558716
+
+T-test rezultati za razlike između originalnih i perturbiranih predikcija:
+Rotation Gender: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          -0.0158836
+    95% confidence interval: (-0.03712, 0.005358)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.1427
+
+Details:
+    number of observations:   3988
+    t-statistic:              -1.4660445590216165
+    degrees of freedom:       3987
+    empirical standard error: 0.010834325177569541
+
+Brightness Age: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          -0.992663
+    95% confidence interval: (-1.276, -0.7092)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-11
+
+Details:
+    number of observations:   1994
+    t-statistic:              -6.868609922223869
+    degrees of freedom:       1993
+    empirical standard error: 0.1445216239123014
+
+Noisy Age: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          1.00397
+    95% confidence interval: (0.8653, 1.143)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-42
+
+Details:
+    number of observations:   1994
+    t-statistic:              14.20189971635466
+    degrees of freedom:       1993
+    empirical standard error: 0.07069233333834982
+
+Rotation Age: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          0.396424
+    95% confidence interval: (0.005467, 0.7874)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           0.0469
+
+Details:
+    number of observations:   1994
+    t-statistic:              1.9885766316522941
+    degrees of freedom:       1993
+    empirical standard error: 0.19935057284799254
+
+Contrast Age: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          -0.905783
+    95% confidence interval: (-1.192, -0.6198)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-09
+
+Details:
+    number of observations:   1994
+    t-statistic:              -6.211107592113493
+    degrees of freedom:       1993
+    empirical standard error: 0.14583276227269085
+
+Contrast Gender: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          0.00223376
+    95% confidence interval: (-0.01473, 0.0192)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.7963
+
+Details:
+    number of observations:   3988
+    t-statistic:              0.25810552631559186
+    degrees of freedom:       3987
+    empirical standard error: 0.008654446821196662
+
+Brightness Gender: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          0.00431797
+    95% confidence interval: (-0.01244, 0.02107)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.6134
+
+Details:
+    number of observations:   3988
+    t-statistic:              0.5052853929233129
+    degrees of freedom:       3987
+    empirical standard error: 0.008545605221893427
+
+Noisy Gender: One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          -0.0191058
+    95% confidence interval: (-0.0271, -0.01111)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-05
+
+Details:
+    number of observations:   3988
+    t-statistic:              -4.686495307158406
+    degrees of freedom:       3987
+    empirical standard error: 0.004076777585209785
+
+
+Rezultati regresijske analize:
+Rotation Gender: ──────────────────────────────────────────────────────────────────────────────
+                     Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────────
+(Intercept)      -0.150748   0.0104593  -14.41    <1e-45  -0.171254  -0.130242
+Original_Gender   0.704873   0.0081381   86.61    <1e-99   0.688918   0.720828
+──────────────────────────────────────────────────────────────────────────────
+Brightness Age: ──────────────────────────────────────────────────────────────────────────
+                  Coef.  Std. Error      t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)   21.7536     0.384478   56.58    <1e-99  20.9996     22.5076
+Original_Age   0.425408   0.0103419  41.13    <1e-99   0.405126    0.44569
+──────────────────────────────────────────────────────────────────────────
+Noisy Age: ──────────────────────────────────────────────────────────────────────────
+                 Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)   4.21869   0.275103     15.33    <1e-49   3.67917    4.75821
+Original_Age  0.855454  0.00739985  115.60    <1e-99   0.840942   0.869967
+──────────────────────────────────────────────────────────────────────────
+Rotation Age: ──────────────────────────────────────────────────────────────────────────
+                  Coef.  Std. Error      t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)   33.2769    0.338357    98.35    <1e-99  32.6133    33.9405
+Original_Age   0.068035  0.00910127   7.48    <1e-12   0.050186   0.085884
+──────────────────────────────────────────────────────────────────────────
+Contrast Age: ──────────────────────────────────────────────────────────────────────────
+                  Coef.  Std. Error      t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)   22.0559     0.382129   57.72    <1e-99  21.3065    22.8054
+Original_Age   0.414634   0.0102787  40.34    <1e-99   0.394476   0.434792
+──────────────────────────────────────────────────────────────────────────
+Contrast Gender: ──────────────────────────────────────────────────────────────────────────────
+                     Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────────
+(Intercept)      -0.14975   0.00803409  -18.64    <1e-73  -0.165501  -0.133998
+Original_Gender   0.738729  0.00625113  118.18    <1e-99   0.726473   0.750985
+──────────────────────────────────────────────────────────────────────────────
+Brightness Gender: ──────────────────────────────────────────────────────────────────────────────
+                     Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────────────
+(Intercept)      -0.144458  0.00806129  -17.92    <1e-68  -0.160262  -0.128653
+Original_Gender   0.751793  0.00627229  119.86    <1e-99   0.739496   0.76409
+──────────────────────────────────────────────────────────────────────────────
+Noisy Gender: ─────────────────────────────────────────────────────────────────────────────────
+                       Coef.  Std. Error       t  Pr(>|t|)  Lower 95%   Upper 95%
+─────────────────────────────────────────────────────────────────────────────────
+(Intercept)      -0.00451974  0.00445806   -1.01    0.3107  -0.01326   0.00422055
+Original_Gender   0.958156    0.00346871  276.23    <1e-99   0.951355  0.964957
+─────────────────────────────────────────────────────────────────────────────────

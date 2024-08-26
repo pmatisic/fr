@@ -1,0 +1,42 @@
+Osnovna statistika:
+3×7 DataFrame
+ Row │ variable   mean      min       median    max       nmissing  eltype
+     │ Symbol     Float64   Real      Float64   Real      Int64     DataType
+─────┼───────────────────────────────────────────────────────────────────────
+   1 │ Epoch        10.5       1        10.5      20             0  Int64
+   2 │ Test_Loss   160.026   143.802   159.644   191.925         0  Float64
+   3 │ Time       4358.76   4217.24   4351.58   4507.18          0  Float64
+
+Korelacija između gubitka testiranja i vremena: -0.7274153926057119
+
+T-test rezultat:
+One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0.0
+    point estimate:          160.026
+    95% confidence interval: (154.7, 165.3)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           <1e-22
+
+Details:
+    number of observations:   20
+    t-statistic:              63.308701508668406
+    degrees of freedom:       19
+    empirical standard error: 2.5277101027212465
+
+
+Rezultati linearne regresije:
+──────────────────────────────────────────────────────────────────────────
+                 Coef.  Std. Error      t  Pr(>|t|)  Lower 95%   Upper 95%
+──────────────────────────────────────────────────────────────────────────
+(Intercept)  174.408      3.76174   46.36    <1e-19  166.505    182.311
+Epoch         -1.36969    0.314024  -4.36    0.0004   -2.02943   -0.709946
+──────────────────────────────────────────────────────────────────────────
+
+RMSE: 7.682364567594231
+
+MAE: 6.060895079908188
